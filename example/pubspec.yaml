@@ -1,0 +1,31 @@
+name: example
+description: "A new Flutter project."
+version: 1.0.0+1
+
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  teller_connect:
+    path: ../
+  envied: ^0.5.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  envied_generator: ^0.5.2
+  build_runner: ^2.4.7
+
+
+flutter:
+  uses-material-design: true
+
+
+
+

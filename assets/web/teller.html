@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connect Bank</title>
+  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+  <script src="https://cdn.teller.io/connect/connect.js"></script>
+</head>
+
+<body>
+  <p align="center">Connect to Bank</p>
+  <script>
+    /**
+     * @param {"teller" | "plaid"} source
+     * @param {string} token
+    */
+    async function sendToken(source, token) {
+      await fetch("/token", {
+        body: {
+          source: source,
+          token: token
+        },
+        method: "POST"
+      });
+
+      if (window.ENV.isWebView) {
+        window.close();
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+      // Initialise the Teller Connect SDK as usual. Note the extra property `skipPicker`. 
+      // This lets us know you won't be displaying our picker or consent screens.
+      // It's advised you set this otherwise the user may briefly see a flash of our 
+      // consent screen when Teller intercepts the enrollment process
+
+      const teller = TellerConnect.setup({
+        skipPicker: true,
+        applicationId: window.ENV.teller.app_id,
+        onSuccess: async function (enrollment) {
+          await sendToken("teller", enrollment.accessToken);
+        },
+      });
+
+      // Initialise Plaid's SDK with a function for the `onEvent` property. 
+      // Our implementation checks whether the selected institution is one
+      // we want to handle. If it is we open the Teller picker with the 
+      // institution pre-selected, and force dismiss Plaid's. If it isn't
+      // it's a no-op.
+
+      const plaid = Plaid.create({
+        ...window.ENV.plaid,        
+        onSuccess: async function (public_token) {
+          await sendToken("plaid", public_token);
+        },
+        onEvent: function (eventName, meta) {
+          if (["BBVA - USA", "Bank of America", "Chase", "Capital One", "Citi", "TD Bank", "US Bank", "Wells Fargo"].indexOf(meta.institution_name) >= 0) {
+            // Thank you very much. We can take it from here 😎
+            teller.open({ institution: meta.institution_name });
+            plaid.exit({ force: true })
+          }
+        }
+      });
+
+      plaid.open();
+    })
+  </script>
+</body>
+
+</html>
