@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connect Bank</title>
-  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
   <script src="https://cdn.teller.io/connect/connect.js"></script>
 </head>
 
@@ -43,29 +42,14 @@
         onSuccess: async function (enrollment) {
           await sendToken("teller", enrollment.accessToken);
         },
-      });
-
-      // Initialise Plaid's SDK with a function for the `onEvent` property. 
-      // Our implementation checks whether the selected institution is one
-      // we want to handle. If it is we open the Teller picker with the 
-      // institution pre-selected, and force dismiss Plaid's. If it isn't
-      // it's a no-op.
-
-      const plaid = Plaid.create({
-        ...window.ENV.plaid,        
-        onSuccess: async function (public_token) {
-          await sendToken("plaid", public_token);
-        },
-        onEvent: function (eventName, meta) {
-          if (["BBVA - USA", "Bank of America", "Chase", "Capital One", "Citi", "TD Bank", "US Bank", "Wells Fargo"].indexOf(meta.institution_name) >= 0) {
-            // Thank you very much. We can take it from here 😎
-            teller.open({ institution: meta.institution_name });
-            plaid.exit({ force: true })
-          }
+        onExit: async () => {
+          await fetch("/teller", {
+            method: "DELETE"
+          });
         }
       });
 
-      plaid.open();
+      teller.open();
     })
   </script>
 </body>

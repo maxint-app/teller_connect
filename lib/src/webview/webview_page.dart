@@ -41,8 +41,9 @@ class WebviewPageState extends State<WebviewPage> {
     super.initState();
     _urlRequest = Teller.startServer(
       tellerConfig: widget.tellerConfig,
-      plaidConfig: widget.plaidConfig,
+      // plaidConfig: widget.plaidConfig,
       onToken: widget.onToken,
+      onExit: widget.onExit,
     );
 
     if (kIsWindows) {
@@ -114,9 +115,6 @@ class WebviewPageState extends State<WebviewPage> {
           initialUrlRequest: URLRequest(
             url: WebUri(snapshot.data!.endpoint),
           ),
-          onCloseWindow: (controller) async {
-            widget.onExit?.call();
-          },
         );
       },
     );

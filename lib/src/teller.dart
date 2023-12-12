@@ -6,7 +6,6 @@ import 'package:alfred/alfred.dart';
 import 'package:flutter/services.dart';
 import 'package:html/parser.dart' as html;
 import 'package:html/dom.dart' as html;
-import 'package:teller_connect/src/models/plaid_config.dart';
 import 'package:teller_connect/src/models/teller_config.dart';
 
 typedef TellerServerHandle = ({String endpoint, HttpServer serverHandle});
@@ -15,13 +14,16 @@ typedef TokenFn = ValueChanged<({String source, String token})>;
 class Teller {
   static Future<TellerServerHandle> startServer({
     required TellerConfig tellerConfig,
-    required PlaidConfig plaidConfig,
     TokenFn? onToken,
+    VoidCallback? onExit,
   }) async {
     final port = Random().nextInt(10000) + 10000;
     final app = Alfred();
 
-    final serverHandle = await app.listen(port);
+    app.all(
+      "*",
+      cors(origin: "localhost"),
+    );
 
     app.get("/teller", (req, res) async {
       res.headers.contentType = ContentType.html;
@@ -36,7 +38,6 @@ class Teller {
               window.ENV = {
                 isWebView: true,
                 teller: ${jsonEncode(tellerConfig.toJson())},
-                plaid: ${jsonEncode(plaidConfig.toJson())}
               };
             </script>
             """,
@@ -52,6 +53,13 @@ class Teller {
 
       res.send("OK");
     });
+
+    app.delete("/teller", (req, res) {
+      onExit?.call();
+      res.send("OK");
+    });
+
+    final serverHandle = await app.listen(port);
 
     return (
       endpoint: "http://localhost:$port/teller",

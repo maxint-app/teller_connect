@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
           onExit: () {
             // pop the page maybe?
             // Navigator.of(context).pop();
+            print("exit");
           },
           onToken: (token) {
             print(token);
