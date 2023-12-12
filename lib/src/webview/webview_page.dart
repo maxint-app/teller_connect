@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:teller_connect/src/models/plaid_config.dart';
 import 'package:teller_connect/src/models/teller_config.dart';
 import 'package:teller_connect/src/teller.dart';
 import 'package:teller_connect/src/utils/platform.dart';
@@ -12,15 +11,12 @@ import 'package:webview_windows/webview_windows.dart';
 
 class WebviewPage extends StatefulWidget {
   final TellerConfig tellerConfig;
-  final PlaidConfig plaidConfig;
-
   final VoidCallback? onExit;
   final TokenFn? onToken;
 
   const WebviewPage({
     super.key,
     required this.tellerConfig,
-    required this.plaidConfig,
     this.onExit,
     this.onToken,
   });

@@ -9,7 +9,7 @@
 </head>
 
 <body>
-  <p align="center">Connect to Bank</p>
+  <p id="text" align="center">Connecting to teller</p>
   <script>
     /**
      * @param {"teller" | "plaid"} source
@@ -39,10 +39,15 @@
       const teller = TellerConnect.setup({
         skipPicker: true,
         applicationId: window.ENV.teller.app_id,
+        onInit: ()=>{
+          document.getElementById("text").innerHTML = "";
+        },
         onSuccess: async function (enrollment) {
+          document.getElementById("text").innerHTML = "Successful. Return to the app";
           await sendToken("teller", enrollment.accessToken);
         },
         onExit: async () => {
+          document.getElementById("text").innerHTML = "Failed. Return to the app";
           await fetch("/teller", {
             method: "DELETE"
           });

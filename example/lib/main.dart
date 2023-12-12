@@ -13,11 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: WebviewPage(
-          plaidConfig: const PlaidConfig(
-            token: Env.plaidLinkToken,
-            env: PlaidEnvironment.sandbox,
-          ),
+        body: BrowserPage(
           tellerConfig: const TellerConfig(
             appId: Env.tellerAppId,
             environment: TellerEnvironment.sandbox,
