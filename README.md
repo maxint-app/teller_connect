@@ -11,7 +11,7 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
 
-See [Sidecar documentation]([https://dart.dev/guides/libraries/writing-package-pages](https://github.com/maxint-app/teller_connect/blob/main/Sidecar%20Documentation%20-%20Slab.pdf)) for more details.
+See [Sidecar documentation](https://github.com/maxint-app/teller_connect/blob/main/Sidecar%20Documentation%20-%20Slab.pdf) for more details.
 
 TODO: Put a short description of the package here that helps potential users
 know whether this package might be useful for them.
