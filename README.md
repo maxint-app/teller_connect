@@ -40,3 +40,85 @@ Add `teller_connect` via `pub`:
 ```bash
 $ flutter pub add teller_connect
 ```
+
+
+## Usage
+
+### Initialize Teller
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:teller_connect/teller_connect.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Teller.initialize(
+    config: const TellerConfig(
+      appId: "your-app-id",
+      environment: TellerEnvironment.sandbox,
+    ),
+  );
+  runApp(const MyApp());
+}
+```
+
+### Use `TellerConnect` widget
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:teller_connect/teller_connect.dart';
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'Teller Connect Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const MyHomePage(title: 'Teller Connect Demo'),
+      );
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: Center(
+          child: ElevatedButton(
+            onPressed: () async {
+              final result = await Navigator.of(context).push<TellerData>(
+                MaterialPageRoute(
+                  builder: (context) => const TellerConnect(
+                    onSuccess: (enrollment){
+                      Navigator.pop(context, enrollment);
+                    },
+                    onError: (){
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              );
+              print(result);
+            },
+            child: const Text("Connect"),
+          ),
+        ),
+      );
+}
+```
+
+## Publisher
+
+[Maxint.com](https://maxint.com)
+
+## License
+
+[MIT](/LICENSE)
