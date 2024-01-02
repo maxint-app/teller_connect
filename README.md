@@ -1,41 +1,42 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Teller Connect for Flutter
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+Teller.io connect SDK for Flutter.
 
 See [Sidecar documentation](https://github.com/maxint-app/teller_connect/blob/main/Sidecar%20Documentation%20-%20Slab.pdf) and Teller first-party support for [React](https://github.com/tellerhq/teller-connect-react) and [other platforms](https://teller.io/docs/guides/connect#integrating-for-other-platforms) for instructions on how to integrate Teller Connect.
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
 
-## Features
+## Configurations
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+### Requirements
+Fulfill 
+- [`flutter_inappwebview` Requirements](https://pub.dev/packages/flutter_inappwebview#requirements)
+- [`webview_windows` Requirements](https://pub.dev/packages/webview_windows#target-platform-requirements)
 
-## Getting started
+### Web
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add following to your `web/index.html`'s `<head>` section
 
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```html
+<script src="/assets/packages/teller_connect/assets/web/teller.js"></script>
 ```
 
-## Additional information
+### Android
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+Follow [Android Setup](https://inappwebview.dev/docs/intro/#setup-android) to setup `flutter_inappwebview` for Android.
+
+### iOS
+
+Follow [iOS Setup](https://inappwebview.dev/docs/intro/#setup-ios) to setup `flutter_inappwebview` for iOS.
+
+### macOS
+
+Follow [macOS Setup](https://inappwebview.dev/docs/intro/#setup-macos) to setup `flutter_inappwebview` for macOS.
+
+
+## Install
+
+Add `teller_connect` via `pub`:
+
+```bash
+$ flutter pub add teller_connect
+```

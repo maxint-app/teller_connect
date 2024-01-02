@@ -15,36 +15,22 @@
      * @param {"teller" | "plaid"} source
      * @param {string} token
     */
-    async function sendToken(source, token) {
+    async function sendToken(enrollment) {
       await fetch("/token", {
-        body: {
-          source: source,
-          token: token
-        },
+        body: JSON.stringify(enrollment),
         method: "POST"
       });
-
-      if (window.ENV.isWebView) {
-        window.close();
-      }
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-
-      // Initialise the Teller Connect SDK as usual. Note the extra property `skipPicker`. 
-      // This lets us know you won't be displaying our picker or consent screens.
-      // It's advised you set this otherwise the user may briefly see a flash of our 
-      // consent screen when Teller intercepts the enrollment process
-
       const teller = TellerConnect.setup({
-        skipPicker: true,
-        applicationId: window.ENV.teller.app_id,
-        onInit: ()=>{
+        ...window.ENV.teller,
+        onInit: () => {
           document.getElementById("text").innerHTML = "";
         },
         onSuccess: async function (enrollment) {
           document.getElementById("text").innerHTML = "Successful. Return to the app";
-          await sendToken("teller", enrollment.accessToken);
+          await sendToken(enrollment);
         },
         onExit: async () => {
           document.getElementById("text").innerHTML = "Failed. Return to the app";

@@ -44,6 +44,12 @@ class TellerConfig {
   /// (e.g. as completing a payment requiring multi-factor authentication).
   final String? connectToken;
 
+  /// The host to use for the Teller Connect server.
+  /// Defaults to https://teller.io.
+  ///
+  /// Useful for Teller Sidecar proxy for plaid users.
+  final String host;
+
   const TellerConfig({
     required this.appId,
     this.environment,
@@ -53,6 +59,7 @@ class TellerConfig {
     this.userId,
     this.enrollmentId,
     this.connectToken,
+    this.host = "https://teller.io",
   });
 
   Map<String, dynamic> toJson() {
@@ -68,13 +75,24 @@ class TellerConfig {
     }..removeWhere((key, value) => value == null);
   }
 
+  Map<String, dynamic> toJsMap() {
+    return {
+      "applicationId": appId,
+      "environment": environment?.name,
+      "institution": institution,
+      "selectAccount": selectAccount?.name,
+      "enrollmentId": enrollmentId,
+      "connectToken": connectToken,
+    }..removeWhere((key, value) => value == null);
+  }
+
   Map<String, dynamic> queryParams() {
     return toJson()..removeWhere((key, value) => ["app_id"].contains(key));
   }
 
   Uri toUri() {
     return Uri.parse(
-      "https://teller.io/connect/$appId",
+      "$host/connect/$appId",
     ).replace(
       queryParameters: queryParams(),
     );

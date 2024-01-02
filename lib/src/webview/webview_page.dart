@@ -1,24 +1,21 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:teller_connect/src/models/teller_config.dart';
-import 'package:teller_connect/src/teller.dart';
+import 'package:teller_connect/src/service/server.dart';
 import 'package:teller_connect/src/utils/platform.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_windows/webview_windows.dart';
 
 class WebviewPage extends StatefulWidget {
-  final TellerConfig tellerConfig;
   final VoidCallback? onExit;
-  final TokenFn? onToken;
+  final EnrollmentFn? onEnrollment;
 
   const WebviewPage({
     super.key,
-    required this.tellerConfig,
     this.onExit,
-    this.onToken,
+    this.onEnrollment,
   });
 
   @override
@@ -35,10 +32,9 @@ class WebviewPageState extends State<WebviewPage> {
   @override
   void initState() {
     super.initState();
-    _urlRequest = Teller.startServer(
-      tellerConfig: widget.tellerConfig,
+    _urlRequest = startServer(
       // plaidConfig: widget.plaidConfig,
-      onToken: widget.onToken,
+      onToken: widget.onEnrollment,
       onExit: widget.onExit,
     );
 
@@ -58,10 +54,39 @@ class WebviewPageState extends State<WebviewPage> {
   }
 
   void initializeWebview() async {
+    final webviewVersion = await WebviewController.getWebViewVersion();
+
+    if (webviewVersion == null && mounted) {
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: const Text('Failed to initialize webview'),
+          content: const Text(
+            'Could not find a compatible webview. '
+            'Please install Microsoft Edge WebView2 Runtime.\n'
+            'After installation, restart the app.',
+          ),
+          actions: [
+            FilledButton.icon(
+              onPressed: () async {
+                await launchUrlString(
+                  "https://developer.microsoft.com/en-us/microsoft-edge/webview2/",
+                );
+                widget.onExit?.call();
+              },
+              icon: const Icon(Icons.download),
+              label: const Text('Install Edge WebView2 Runtime'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     _controller = WebviewController();
 
     await _controller!.initialize();
-    await _controller!.openDevTools();
 
     _subscriptions.addAll([
       _controller!.url.listen((url) {
@@ -89,7 +114,7 @@ class WebviewPageState extends State<WebviewPage> {
         }
 
         if (!snapshot.hasData ||
-            (kIsWindows && !_controller!.value.isInitialized)) {
+            (kIsWindows && _controller?.value.isInitialized != true)) {
           return const Center(
             child: CircularProgressIndicator.adaptive(),
           );
@@ -104,9 +129,10 @@ class WebviewPageState extends State<WebviewPage> {
         if (kIsWindows) {
           return Webview(_controller!);
         }
+
         return InAppWebView(
           initialSettings: InAppWebViewSettings(
-            isInspectable: kDebugMode,
+            isInspectable: false,
           ),
           initialUrlRequest: URLRequest(
             url: WebUri(snapshot.data!.endpoint),

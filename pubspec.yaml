@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   alfred: ^1.1.1
+  device_info_plus: ^9.1.1
   flutter:
     sdk: flutter
   flutter_inappwebview: ^6.0.0-beta.31

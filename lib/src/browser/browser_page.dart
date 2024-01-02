@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:teller_connect/src/models/teller_config.dart';
-import 'package:teller_connect/src/teller.dart';
+import 'package:teller_connect/src/service/server.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class BrowserPage extends StatefulWidget {
-  final TellerConfig tellerConfig;
   final VoidCallback? onExit;
-  final TokenFn? onToken;
+  final EnrollmentFn? onEnrollment;
   const BrowserPage({
     super.key,
-    required this.tellerConfig,
     this.onExit,
-    this.onToken,
+    this.onEnrollment,
   });
 
   @override
@@ -28,9 +25,8 @@ class _BrowserPageState extends State<BrowserPage> {
   }
 
   Future<void> _asyncInitState() async {
-    _serverHandle = await Teller.startServer(
-      tellerConfig: widget.tellerConfig,
-      onToken: widget.onToken,
+    _serverHandle = await startServer(
+      onToken: widget.onEnrollment,
       onExit: widget.onExit,
     );
 
