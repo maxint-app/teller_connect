@@ -11,6 +11,7 @@ import 'package:teller_connect/src/webview/webview_page.dart';
 
 export 'src/models/plaid_config.dart';
 export 'src/models/teller_config.dart';
+export 'src/models/teller_data.dart';
 export 'src/teller.dart' show Teller;
 
 class TellerConnect extends StatelessWidget {
