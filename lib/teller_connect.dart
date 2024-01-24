@@ -33,7 +33,10 @@ class TellerConnect extends StatelessWidget {
       );
     }
 
-    if (kIsLinux || (windowsInfo != null && windowsInfo!.buildNumber < 17763)) { // Windows 10 1809 
+    if (kIsLinux ||
+        kIsMacOS ||
+        (windowsInfo != null && windowsInfo!.buildNumber < 17763)) {
+      // Windows 10 1809
       return BrowserPage(
         onExit: onExit,
         onEnrollment: onEnrollment,
