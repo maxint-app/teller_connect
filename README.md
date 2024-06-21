@@ -17,7 +17,8 @@ Fulfill
 Add following to your `web/index.html`'s `<head>` section
 
 ```html
-<script src="/assets/packages/teller_connect/assets/web/teller.js"></script>
+<script type="application/javascript" src="/assets/packages/flutter_inappwebview_web/assets/web/web_support.js"></script>
+<script type="application/javascript" src="https://cdn.teller.io/connect/connect.js"></script>
 ```
 
 ### Android
