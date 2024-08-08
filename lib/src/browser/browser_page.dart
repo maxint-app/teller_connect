@@ -34,11 +34,7 @@ class _BrowserPageState extends State<BrowserPage> {
 
     final endpoint = _serverHandle!.endpoint;
 
-    if (await canLaunchUrlString(endpoint)) {
-      await launchUrlString(endpoint);
-    } else {
-      throw 'Could not launch $endpoint';
-    }
+    await launchUrlString(endpoint);
   }
 
   @override
