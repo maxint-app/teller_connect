@@ -1,9 +1,9 @@
 # This is a generated file; do not edit or check into version control.
 device_info_plus=/Users/krtirtho/.pub-cache/hosted/pub.dev/device_info_plus-10.1.1/
 flutter_inappwebview=/Users/krtirtho/.pub-cache/hosted/pub.dev/flutter_inappwebview-6.0.0/
-flutter_inappwebview_android=/Users/krtirtho/.pub-cache/git/flutter_inappwebview-ac292bbc39a939e9cca2935373be1c3e084edf46/flutter_inappwebview_android/
-flutter_inappwebview_ios=/Users/krtirtho/.pub-cache/git/flutter_inappwebview-615214fb2fd3f830955d526cfb6698d6e20b7b7a/flutter_inappwebview_ios/
-flutter_inappwebview_macos=/Users/krtirtho/.pub-cache/git/flutter_inappwebview-615214fb2fd3f830955d526cfb6698d6e20b7b7a/flutter_inappwebview_macos/
+flutter_inappwebview_android=/Users/krtirtho/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.0.13/
+flutter_inappwebview_ios=/Users/krtirtho/.pub-cache/hosted/pub.dev/flutter_inappwebview_ios-1.0.13/
+flutter_inappwebview_macos=/Users/krtirtho/.pub-cache/hosted/pub.dev/flutter_inappwebview_macos-1.0.11/
 flutter_inappwebview_web=/Users/krtirtho/.pub-cache/hosted/pub.dev/flutter_inappwebview_web-1.0.8/
 url_launcher=/Users/krtirtho/.pub-cache/hosted/pub.dev/url_launcher-6.3.0/
 url_launcher_android=/Users/krtirtho/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.8/
