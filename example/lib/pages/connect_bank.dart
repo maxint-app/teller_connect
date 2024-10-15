@@ -7,6 +7,9 @@ class ConnectBankPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Connect Bank"),
+      ),
       body: TellerConnect(
         onExit: () {
           // pop the page maybe?
