@@ -2,7 +2,7 @@
 
 Teller.io connect SDK for Flutter.
 
-See [Sidecar documentation](https://github.com/maxint-app/teller_connect/blob/main/Sidecar%20Documentation%20-%20Slab.pdf) and Teller first-party support for [React](https://github.com/tellerhq/teller-connect-react) and [other platforms](https://teller.io/docs/guides/connect#integrating-for-other-platforms) for instructions on how to integrate Teller Connect.
+See [Sidecar documentation](https://blog.teller.io/blog/2023/10/19/sidecar/) and Teller first-party support for [React](https://github.com/tellerhq/teller-connect-react) and [other platforms](https://teller.io/docs/guides/connect#integrating-for-other-platforms) for instructions on how to integrate Teller Connect.
 
 
 ## Configurations
