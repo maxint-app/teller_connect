@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:teller_connect/src/service/server.dart';
 import 'package:teller_connect/src/teller.dart';
 import 'package:teller_connect/src/webview/iframe_helpers/iframe_helper.dart';
@@ -56,15 +55,6 @@ class _IframePageState extends State<IframePage> {
 
   @override
   Widget build(BuildContext context) {
-    return InAppWebView(
-      initialSettings: InAppWebViewSettings(
-        isInspectable: false,
-      ),
-      initialUrlRequest: URLRequest(
-        url: WebUri(
-          tellerConfig!.toUri().toString(),
-        ),
-      ),
-    );
+    return const SizedBox();
   }
 }
