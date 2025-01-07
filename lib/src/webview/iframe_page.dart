@@ -32,16 +32,20 @@ class _IframePageState extends State<IframePage> {
       );
     }
 
-    openTellerConnect();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) async {
+        openTellerConnect();
 
-    _subscriptions = [
-      tellerSuccessStream.listen((data) {
-        widget.onEnrollment?.call(data);
-      }),
-      tellerExitStream.listen((_) {
-        widget.onExit?.call();
-      }),
-    ];
+        _subscriptions = [
+          tellerSuccessStream.listen((data) {
+            widget.onEnrollment?.call(data);
+          }),
+          tellerExitStream.listen((_) {
+            widget.onExit?.call();
+          }),
+        ];
+      },
+    );
   }
 
   @override
