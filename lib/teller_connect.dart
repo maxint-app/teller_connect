@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:teller_connect/src/browser/browser_page.dart';
 import 'package:teller_connect/src/service/server.dart';
-import 'package:teller_connect/src/teller.dart';
 import 'package:teller_connect/src/utils/platform.dart';
 import 'package:teller_connect/src/webview/iframe_page.dart';
 import 'package:teller_connect/src/webview/webview_page.dart';
@@ -33,7 +32,7 @@ class TellerConnect extends StatelessWidget {
       );
     }
 
-    if (kIsLinux || (windowsInfo != null && windowsInfo!.buildNumber < 17763)) {
+    if (kIsLinux) {
       // Windows 10 1809
       return BrowserPage(
         onExit: onExit,
