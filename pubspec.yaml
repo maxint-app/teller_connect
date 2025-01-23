@@ -4,7 +4,7 @@ version: 0.0.1
 homepage: https://maxint.com
 
 topics:
-  - SDK
+  - sdk
   - teller
   - openbanking
 
