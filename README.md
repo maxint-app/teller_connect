@@ -10,7 +10,6 @@ See [Sidecar documentation](https://blog.teller.io/blog/2023/10/19/sidecar/) and
 ### Requirements
 Fulfill 
 - [`flutter_inappwebview` Requirements](https://pub.dev/packages/flutter_inappwebview#requirements)
-- [`webview_windows` Requirements](https://pub.dev/packages/webview_windows#target-platform-requirements)
 
 ### Web
 
@@ -19,7 +18,6 @@ Add following to your `web/index.html`'s `<head>` section
 ```html
 <script defer type="application/javascript" src="/assets/packages/flutter_inappwebview_web/assets/web/web_support.js"></script>
 <script defer type="application/javascript" src="https://cdn.teller.io/connect/connect.js"></script>
-<script defer type="application/javascript" src="/assets/packages/teller_connect/assets/web/teller.js"></script>
 ```
 
 ### Android
@@ -45,26 +43,6 @@ $ flutter pub add teller_connect
 
 
 ## Usage
-
-### Initialize Teller
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:teller_connect/teller_connect.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Teller.initialize(
-    config: const TellerConfig(
-      appId: "your-app-id",
-      environment: TellerEnvironment.sandbox,
-    ),
-  );
-  runApp(const MyApp());
-}
-```
-
-### Use `TellerConnect` widget
 
 ```dart
 import 'package:flutter/material.dart';
@@ -99,6 +77,10 @@ class MyHomePage extends StatelessWidget {
               final result = await Navigator.of(context).push<TellerData>(
                 MaterialPageRoute(
                   builder: (context) => const TellerConnect(
+                    config: const TellerConfig(
+                      appId: "your-app-id",
+                      environment: TellerEnvironment.sandbox,
+                    ),
                     onSuccess: (enrollment){
                       Navigator.pop(context, enrollment);
                     },
