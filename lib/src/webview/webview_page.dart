@@ -1,18 +1,20 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:teller_connect/src/service/server.dart';
+import 'package:teller_connect/teller_connect.dart';
 
 class WebviewPage extends StatefulWidget {
   final VoidCallback? onExit;
   final EnrollmentFn? onEnrollment;
+  final TellerConfig config;
 
   const WebviewPage({
     super.key,
     this.onExit,
     this.onEnrollment,
+    required this.config,
   });
 
   @override
@@ -20,15 +22,13 @@ class WebviewPage extends StatefulWidget {
 }
 
 class WebviewPageState extends State<WebviewPage> {
-  Future<TellerServerHandle>? _urlRequest;
   final List<StreamSubscription> _subscriptions = [];
-  HttpServer? _server;
 
   @override
   void initState() {
     super.initState();
-    _urlRequest = startServer(
-      // plaidConfig: widget.plaidConfig,
+    TellerServerHandler.setup(
+      config: widget.config,
       onToken: widget.onEnrollment,
       onExit: widget.onExit,
     );
@@ -39,14 +39,14 @@ class WebviewPageState extends State<WebviewPage> {
     for (final sub in _subscriptions) {
       sub.cancel();
     }
-    _server?.close(force: true);
+    TellerServerHandler.destroy();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _urlRequest,
+      future: TellerServerHandler.endpointFuture,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -60,14 +60,12 @@ class WebviewPageState extends State<WebviewPage> {
           );
         }
 
-        _server = snapshot.data!.serverHandle;
-
         return InAppWebView(
           initialSettings: InAppWebViewSettings(
             isInspectable: false,
           ),
           initialUrlRequest: URLRequest(
-            url: WebUri(snapshot.data!.endpoint),
+            url: WebUri(snapshot.data!),
           ),
         );
       },

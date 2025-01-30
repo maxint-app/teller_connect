@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -6,69 +7,82 @@ import 'package:alfred/alfred.dart';
 import 'package:flutter/services.dart';
 import 'package:html/parser.dart' as html;
 import 'package:html/dom.dart' as html;
-import 'package:teller_connect/src/models/teller_data.dart';
-import 'package:teller_connect/src/teller.dart';
+import 'package:teller_connect/teller_connect.dart';
 
-typedef TellerServerHandle = ({String endpoint, HttpServer serverHandle});
 typedef EnrollmentFn = ValueChanged<TellerData>;
 
-Future<TellerServerHandle> startServer({
-  EnrollmentFn? onToken,
-  VoidCallback? onExit,
-}) async {
-  if (!isInitialized) {
-    throw Exception(
-      "Teller is not initialized\n"
-      "Please call Teller.initialize() in main function before using Teller.",
+abstract class TellerServerHandler {
+  static Completer<String> _endpointCompleter = Completer();
+  static HttpServer? _serverHandle;
+  static bool _initialized = false;
+
+  static Future<String> get endpointFuture => _endpointCompleter.future;
+
+  static Future<void> setup({
+    required TellerConfig config,
+    EnrollmentFn? onToken,
+    VoidCallback? onExit,
+  }) async {
+    if (_initialized) {
+      throw Exception("Teller Server is already set up. Destroy it first");
+    }
+
+    final port = Random().nextInt(10000) + 10000;
+    final app = Alfred();
+
+    app.all(
+      "*",
+      cors(origin: "localhost"),
     );
-  }
 
-  final port = Random().nextInt(10000) + 10000;
-  final app = Alfred();
-
-  app.all(
-    "*",
-    cors(origin: "localhost"),
-  );
-
-  app.get("/teller", (req, res) async {
-    res.headers.contentType = ContentType.html;
-    final htmlContent = await rootBundle.loadString(
-      "packages/teller_connect/assets/web/teller.html",
-    );
-    final dom = html.parse(htmlContent);
-    dom.head?.append(
-      html.Element.html(
-        """
+    app.get("/teller", (req, res) async {
+      res.headers.contentType = ContentType.html;
+      final htmlContent = await rootBundle.loadString(
+        "packages/teller_connect/assets/web/teller.html",
+      );
+      final dom = html.parse(htmlContent);
+      dom.head?.append(
+        html.Element.html(
+          """
             <script>
               window.ENV = {
                 isWebView: true,
-                teller: ${jsonEncode(tellerConfig!.toJsMap())},
+                teller: ${jsonEncode(config.toJsMap())},
               };
             </script>
             """,
-      ),
-    );
-    return dom.outerHtml;
-  });
+        ),
+      );
+      return dom.outerHtml;
+    });
 
-  app.post("/token", (req, res) async {
-    final body = jsonDecode(await req.body as String);
+    app.post("/token", (req, res) async {
+      final body = jsonDecode(await req.body as String);
 
-    onToken?.call(TellerData.fromJson(body));
+      onToken?.call(TellerData.fromJson(body));
 
-    res.send("OK");
-  });
+      res.send("OK");
+    });
 
-  app.delete("/teller", (req, res) {
-    onExit?.call();
-    res.send("OK");
-  });
+    app.delete("/teller", (req, res) {
+      onExit?.call();
+      res.send("OK");
+    });
 
-  final serverHandle = await app.listen(port);
+    final serverHandle = await app.listen(port);
 
-  return (
-    endpoint: "http://localhost:$port/teller",
-    serverHandle: serverHandle,
-  );
+    _initialized = true;
+    _endpointCompleter.complete("http://localhost:$port/teller");
+    _serverHandle = serverHandle;
+  }
+
+  static void destroy() {
+    if (!_initialized) {
+      throw Exception("Teller Server is not set up");
+    }
+
+    _serverHandle?.close(force: true);
+    _initialized = false;
+    _endpointCompleter = Completer();
+  }
 }
