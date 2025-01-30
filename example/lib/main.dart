@@ -1,16 +1,8 @@
-import 'package:example/collection/env.dart';
 import 'package:example/pages/connect_bank.dart';
 import 'package:flutter/material.dart';
-import 'package:teller_connect/teller_connect.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Teller.initialize(
-    config: const TellerConfig(
-      appId: Env.tellerAppId,
-      environment: TellerEnvironment.sandbox,
-    ),
-  );
   runApp(const MyApp());
 }
 

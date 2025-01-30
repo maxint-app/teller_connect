@@ -1,16 +1,16 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:teller_connect/src/service/server.dart';
-import 'package:teller_connect/src/teller.dart';
 import 'package:teller_connect/src/webview/iframe_helpers/iframe_helper.dart';
+import 'package:teller_connect/teller_connect.dart';
 
 class IframePage extends StatefulWidget {
   final VoidCallback? onExit;
   final EnrollmentFn? onEnrollment;
+  final TellerConfig config;
 
   const IframePage({
     super.key,
+    required this.config,
     this.onExit,
     this.onEnrollment,
   });
@@ -20,40 +20,25 @@ class IframePage extends StatefulWidget {
 }
 
 class _IframePageState extends State<IframePage> {
-  List<StreamSubscription> _subscriptions = [];
-
   @override
   void initState() {
     super.initState();
-    if (!isInitialized) {
-      throw Exception(
-        "Teller is not initialized\n"
-        "Please call Teller.initialize() in main function before using Teller.",
-      );
-    }
 
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) async {
-        openTellerConnect();
-
-        _subscriptions = [
-          tellerSuccessStream.listen((data) {
-            widget.onEnrollment?.call(data);
-          }),
-          tellerExitStream.listen((_) {
-            widget.onExit?.call();
-          }),
-        ];
+        TellerWebHelper.setup(
+          widget.config,
+          onExit: widget.onExit,
+          onSuccess: widget.onEnrollment,
+        );
+        TellerWebHelper.open();
       },
     );
   }
 
   @override
   dispose() {
-    for (final sub in _subscriptions) {
-      sub.cancel();
-    }
-    closeTellerConnect();
+    TellerWebHelper.destroy();
     super.dispose();
   }
 

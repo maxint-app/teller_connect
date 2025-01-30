@@ -3,47 +3,58 @@
 import 'dart:convert';
 import 'dart:js_interop';
 
-import 'package:teller_connect/src/teller.dart';
-import 'package:teller_connect/src/webview/iframe_helpers/iframe_helper.dart';
+import 'package:flutter/material.dart';
 import 'package:teller_connect/teller_connect.dart';
 
 @JS('TellerConnect')
 extension type TellerConnect._(JSObject _) implements JSObject {
   external static TellerConnect setup(JSObject options);
   external void open(JSObject? params);
+  external void close();
   external void destroy();
 }
 
-TellerConnect? _tellerConnect;
+abstract class TellerWebHelper {
+  static bool _initialized = false;
+  static TellerConnect? _tellerConnect;
 
-void setupTellerWeb() {
-  if (!isInitialized) {
-    throw Exception('Teller is not initialized');
+  static setup(
+    TellerConfig tellerConfig, {
+    void Function(TellerData data)? onSuccess,
+    VoidCallback? onExit,
+  }) {
+    if (_initialized) {
+      throw Exception('Teller Web is already set up. Destroy it first');
+    }
+
+    _tellerConnect = TellerConnect.setup({
+      ...tellerConfig.toJsMap(),
+      "onSuccess": (JSObject enrollment) {
+        final data = jsonDecode(jsonEncode(enrollment.dartify()));
+        onSuccess?.call(TellerData.fromJson(data));
+      }.toJS,
+      "onExit": () {
+        onExit?.call();
+      }.toJS,
+    }.jsify() as JSObject);
+
+    _initialized = true;
   }
 
-  _tellerConnect = TellerConnect.setup({
-    ...tellerConfig!.toJsMap(),
-    "onSuccess": (JSObject enrollment) {
-      final data = jsonDecode(jsonEncode(enrollment.dartify()));
-      tellerSuccessStreamController.add(TellerData.fromJson(data));
-    }.toJS,
-    "onExit": () {
-      tellerExitStreamController.add(null);
-    }.toJS,
-  }.jsify() as JSObject);
-}
+  static void open() {
+    if (!_initialized) {
+      throw Exception('Teller Web is not set up');
+    }
 
-void openTellerConnect() {
-  if (_tellerConnect == null) {
-    throw Exception('Teller Connect is not set up');
-  }
-  _tellerConnect!.open(null);
-}
-
-void closeTellerConnect() {
-  if (_tellerConnect == null) {
-    throw Exception('Teller Connect is not set up');
+    _tellerConnect!.open(null);
   }
 
-  _tellerConnect!.destroy();
+  static void destroy() {
+    if (!_initialized) {
+      throw Exception('Teller Web is not set up');
+    }
+
+    _tellerConnect!.destroy();
+    _initialized = false;
+  }
 }
