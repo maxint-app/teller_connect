@@ -1,3 +1,9 @@
+## 0.1.0+1
+
+### Changes
+
+- Update platform listing
+
 ## 0.1.0
 
 **Features**
