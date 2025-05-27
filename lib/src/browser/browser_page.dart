@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:teller_connect/src/service/server.dart';
+import 'package:teller_connect/teller_connect.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class BrowserPage extends StatefulWidget {
   final VoidCallback? onExit;
   final EnrollmentFn? onEnrollment;
+  final TellerConfig config;
   const BrowserPage({
     super.key,
+    required this.config,
     this.onExit,
     this.onEnrollment,
   });
@@ -16,7 +19,7 @@ class BrowserPage extends StatefulWidget {
 }
 
 class _BrowserPageState extends State<BrowserPage> {
-  TellerServerHandle? _serverHandle;
+  String? endpoint;
 
   @override
   void initState() {
@@ -25,21 +28,22 @@ class _BrowserPageState extends State<BrowserPage> {
   }
 
   Future<void> _asyncInitState() async {
-    _serverHandle = await startServer(
+    await TellerServerHandler.setup(
+      config: widget.config,
       onToken: widget.onEnrollment,
       onExit: widget.onExit,
     );
+    endpoint = await TellerServerHandler.endpointFuture;
+    if (context.mounted) {
+      setState(() {});
+    }
 
-    setState(() {});
-
-    final endpoint = _serverHandle!.endpoint;
-
-    await launchUrlString(endpoint);
+    await launchUrlString(endpoint!);
   }
 
   @override
   void dispose() {
-    _serverHandle?.serverHandle.close(force: true);
+    TellerServerHandler.destroy();
     super.dispose();
   }
 
@@ -52,7 +56,7 @@ class _BrowserPageState extends State<BrowserPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text("You'll be redirected to your default browser."),
-          if (_serverHandle != null)
+          if (endpoint != null)
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -60,7 +64,7 @@ class _BrowserPageState extends State<BrowserPage> {
                 color: isDark ? Colors.grey[850] : Colors.grey[200],
               ),
               child: Text(
-                _serverHandle!.endpoint,
+                endpoint!,
                 style: const TextStyle(color: Colors.blue),
               ),
             )

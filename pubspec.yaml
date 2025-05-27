@@ -1,6 +1,6 @@
 name: teller_connect
 description: "Teller.io connect SDK for Flutter. Instantly connect your app to thousands of financial institutions"
-version: 0.0.1
+version: 0.1.0+1
 homepage: https://maxint.com
 
 topics:
@@ -9,7 +9,7 @@ topics:
   - openbanking
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ">=3.3.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -29,3 +29,11 @@ dev_dependencies:
 flutter:
   assets:
     - assets/web/
+
+platforms:
+  android:
+  ios:
+  web:
+  linux:
+  macos:
+  windows:
