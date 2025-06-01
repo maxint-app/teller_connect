@@ -3,17 +3,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:teller_connect/src/service/server.dart';
-import 'package:teller_connect/teller_connect.dart';
+import 'package:teller_connect/src/models/teller_config.dart';
 
 class WebviewPage extends StatefulWidget {
   final VoidCallback? onExit;
   final EnrollmentFn? onEnrollment;
   final TellerConfig config;
+  final WebViewEnvironment? webViewEnvironment;
 
   const WebviewPage({
     super.key,
     this.onExit,
     this.onEnrollment,
+    this.webViewEnvironment,
     required this.config,
   });
 
@@ -67,6 +69,7 @@ class WebviewPageState extends State<WebviewPage> {
           initialUrlRequest: URLRequest(
             url: WebUri(snapshot.data!),
           ),
+          webViewEnvironment: widget.webViewEnvironment,
         );
       },
     );
