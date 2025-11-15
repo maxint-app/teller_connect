@@ -9,14 +9,18 @@
 </head>
 
 <style>
-  body {
-    background-color: #f6fcf5;
-    color: black;
+  /* Make the page transparent so the embedding app or iframe can control background */
+  html, body {
+    background-color: transparent !important;
+    background: transparent !important;
+    height: 100%;
+    margin: 0;
   }
+
   @media (prefers-color-scheme: dark) {
-    body {
-      background-color: #0c150f;
-      color: white;
+    html, body {
+      background-color: transparent !important;
+      background: transparent !important;
     }
   }
 </style>
