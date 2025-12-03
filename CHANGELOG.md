@@ -1,3 +1,11 @@
+## 0.2.0
+
+### Changes
+
+**Features**
+- make background transparent for teller.html
+- add webview environment config parameter
+
 ## 0.1.0+1
 
 ### Changes
