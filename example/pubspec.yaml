@@ -10,17 +10,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.8
   teller_connect:
     path: ../
-  envied: ^0.5.2
+  envied: ^1.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
-  envied_generator: ^0.5.2
-  build_runner: ^2.4.7
+  flutter_lints: ^6.0.0
+  envied_generator: ^1.3.2
+  build_runner: ^2.10.4
 
 
 flutter:
