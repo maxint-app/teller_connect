@@ -49,28 +49,35 @@ class _BrowserPageState extends State<BrowserPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text("You'll be redirected to your default browser."),
-          if (endpoint != null)
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: isDark ? Colors.grey[850] : Colors.grey[200],
-              ),
-              child: Text(
-                endpoint!,
-                style: const TextStyle(color: Colors.blue),
-              ),
-            )
-          else
-            const CircularProgressIndicator.adaptive()
-        ],
+    return Container(
+      color: colorScheme.surface,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "You'll be redirected to your default browser.",
+              style: TextStyle(color: colorScheme.onSurface),
+            ),
+            if (endpoint != null)
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: colorScheme.surfaceContainer,
+                  border: Border.all(color: colorScheme.outline),
+                ),
+                child: Text(
+                  endpoint!,
+                  style: TextStyle(color: colorScheme.primary),
+                ),
+              )
+            else
+              const CircularProgressIndicator.adaptive()
+          ],
+        ),
       ),
     );
   }

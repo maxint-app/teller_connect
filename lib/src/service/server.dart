@@ -5,8 +5,6 @@ import 'dart:math';
 
 import 'package:alfred/alfred.dart';
 import 'package:flutter/services.dart';
-import 'package:html/parser.dart' as html;
-import 'package:html/dom.dart' as html;
 import 'package:teller_connect/teller_connect.dart';
 
 typedef EnrollmentFn = ValueChanged<TellerData>;
@@ -20,6 +18,7 @@ abstract class TellerServerHandler {
 
   static Future<void> setup({
     required TellerConfig config,
+    bool isDark = false,
     EnrollmentFn? onToken,
     VoidCallback? onExit,
   }) async {
@@ -40,20 +39,17 @@ abstract class TellerServerHandler {
       final htmlContent = await rootBundle.loadString(
         "packages/teller_connect/assets/web/teller.html",
       );
-      final dom = html.parse(htmlContent);
-      dom.head?.append(
-        html.Element.html(
-          """
-            <script>
-              window.ENV = {
-                isWebView: true,
-                teller: ${jsonEncode(config.toJsMap())},
-              };
-            </script>
-            """,
-        ),
-      );
-      return dom.outerHtml;
+      final envScript = '''
+        <script>
+          window.ENV = {
+            isWebView: true,
+            isDark: $isDark,
+            teller: ${jsonEncode(config.toJsMap())},
+          };
+        </script>
+      ''';
+      final modifiedHtml = htmlContent.replaceFirst('</head>', '$envScript\n</head>');
+      return modifiedHtml;
     });
 
     app.post("/token", (req, res) async {

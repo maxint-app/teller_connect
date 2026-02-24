@@ -47,31 +47,39 @@ class WebviewPageState extends State<WebviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: TellerServerHandler.endpointFuture,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(
-            child: Text(snapshot.error.toString()),
-          );
-        }
+    final bgColor = Theme.of(context).colorScheme.surface;
 
-        if (!snapshot.hasData) {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
-        }
+    return Container(
+      color: bgColor,
+      child: FutureBuilder(
+        future: TellerServerHandler.endpointFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
 
-        return InAppWebView(
-          initialSettings: InAppWebViewSettings(
-            isInspectable: false,
-          ),
-          initialUrlRequest: URLRequest(
-            url: WebUri(snapshot.data!),
-          ),
-          webViewEnvironment: widget.webViewEnvironment,
-        );
-      },
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator.adaptive(
+                backgroundColor: bgColor,
+              ),
+            );
+          }
+
+          return InAppWebView(
+            initialSettings: InAppWebViewSettings(
+              isInspectable: false,
+              transparentBackground: true,
+            ),
+            initialUrlRequest: URLRequest(
+              url: WebUri(snapshot.data!),
+            ),
+            webViewEnvironment: widget.webViewEnvironment,
+          );
+        },
+      ),
     );
   }
 }
