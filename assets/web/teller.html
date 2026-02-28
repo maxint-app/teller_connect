@@ -6,61 +6,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connect Bank</title>
   <script src="https://cdn.teller.io/connect/connect.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* Light Theme Variables */
-      --bg-color: #F9F9F9;
-      --card-bg: #FFFFFF;
-      --text-primary: #1C1C1E;
-      --text-secondary: #666666;
-      --accent-color: #34C759;
-      --error-color: #FF3B30;
-      --button-text: #FFFFFF;
-      --border-color: #E5E5E5;
-      --shadow: 0 4px 20px rgba(0,0,0,0.05);
+      --bg-color: #faf8f9;
+      --card-bg: #ffffff;
+      --text-primary: #111827;
+      --text-secondary: #6b7280;
+      --accent-color: #16a34a;
+      --accent-container: #dcfce7;
+      --error-color: #dc2626;
+      --error-container: #fef2f2;
+      --button-text: #ffffff;
+      --border-color: #e5e7eb;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        /* Dark Theme Variables */
         --bg-color: #000000;
-        --card-bg: #1C1C1E;
-        --text-primary: #FFFFFF;
-        --text-secondary: #A1A1AA;
-        --accent-color: #34C759;
-        --error-color: #FF453A;
-        --button-text: #000000;
-        --border-color: #333333;
-        --shadow: 0 4px 20px rgba(0,0,0,0.4);
+        --card-bg: #1c1c1e;
+        --text-primary: #f9fafb;
+        --text-secondary: #9ca3af;
+        --accent-color: #4ade80;
+        --accent-container: rgba(74, 222, 128, 0.12);
+        --error-color: #f87171;
+        --error-container: rgba(248, 113, 113, 0.12);
+        --button-text: #052e16;
+        --border-color: rgba(255, 255, 255, 0.08);
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       }
     }
 
+    html.dark {
+      --bg-color: #000000;
+      --card-bg: #1c1c1e;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --accent-color: #4ade80;
+      --accent-container: rgba(74, 222, 128, 0.12);
+      --error-color: #f87171;
+      --error-container: rgba(248, 113, 113, 0.12);
+      --button-text: #052e16;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-primary);
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      transition: background-color 0.3s ease;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Loading State */
     #loading-state {
       text-align: center;
       color: var(--text-secondary);
-      font-size: 16px;
+      font-size: 15px;
+      font-weight: 500;
     }
 
-    /* Result Card Styles */
     .container {
       width: 100%;
-      max-width: 420px;
-      padding: 20px;
-      box-sizing: border-box;
+      max-width: 380px;
+      padding: 24px;
       display: none;
     }
 
@@ -70,45 +87,37 @@
 
     .card {
       background-color: var(--card-bg);
-      border-radius: 32px;
-      padding: 40px 32px;
+      border-radius: 24px;
+      padding: 48px 32px 36px;
       text-align: center;
       box-shadow: var(--shadow);
       border: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 24px;
+      gap: 20px;
     }
 
-    /* Icon Animation */
     .icon-wrapper {
-      width: 80px;
-      height: 80px;
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 8px;
-      position: relative;
     }
 
-    .icon-wrapper.success {
-      background-color: rgba(52, 199, 89, 0.1);
-    }
-
-    .icon-wrapper.error {
-      background-color: rgba(255, 59, 48, 0.1);
-    }
+    .icon-wrapper.success { background-color: var(--accent-container); }
+    .icon-wrapper.error { background-color: var(--error-container); }
 
     .icon-circle {
       animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
     .checkmark, .crossmark {
-      width: 40px;
-      height: 40px;
-      stroke-width: 3;
+      width: 32px;
+      height: 32px;
+      stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
       fill: none;
@@ -117,43 +126,40 @@
       animation: drawIcon 0.6s 0.3s ease-out forwards;
     }
 
-    .checkmark {
-      stroke: var(--accent-color);
-    }
-
-    .crossmark {
-      stroke: var(--error-color);
-    }
+    .checkmark { stroke: var(--accent-color); }
+    .crossmark { stroke: var(--error-color); }
 
     h1 {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 700;
-      margin: 0;
       letter-spacing: -0.02em;
       color: var(--text-primary);
     }
 
-    p {
-      font-size: 16px;
+    .subtitle {
+      font-size: 15px;
       line-height: 1.5;
       color: var(--text-secondary);
-      margin: 0;
-      max-width: 280px;
+      max-width: 260px;
+      margin-top: 4px;
     }
 
     .btn {
-      font-size: 16px;
+      font-family: inherit;
+      font-size: 15px;
       font-weight: 600;
-      padding: 16px 32px;
-      border-radius: 20px;
-      text-decoration: none;
-      display: inline-block;
+      padding: 14px 24px;
+      border-radius: 14px;
       width: 100%;
-      box-sizing: border-box;
-      transition: transform 0.2s, opacity 0.2s;
       border: none;
       cursor: pointer;
-      margin-top: 16px;
+      margin-top: 8px;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+      opacity: 0.9;
     }
 
     .btn.success {
@@ -162,13 +168,9 @@
     }
 
     .btn.error {
-      background-color: var(--error-color);
-      color: #FFFFFF;
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-      opacity: 0.9;
+      background-color: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
     }
 
     @keyframes scaleIn {
@@ -183,10 +185,8 @@
 </head>
 
 <body>
-  <!-- Loading State -->
   <p id="loading-state">Connecting to Teller...</p>
 
-  <!-- Success Card -->
   <div id="success-container" class="container">
     <div class="card">
       <div class="icon-wrapper success icon-circle">
@@ -196,15 +196,12 @@
       </div>
       <div>
         <h1>Connected!</h1>
-        <p style="margin-top: 12px;">Your bank account has been successfully linked.</p>
+        <p class="subtitle">Your bank account has been successfully linked.</p>
       </div>
-      <button id="returnBtn" class="btn success" onclick="window.close()">
-        Return to App
-      </button>
+      <button class="btn success" onclick="window.close()">Return to App</button>
     </div>
   </div>
 
-  <!-- Error Card -->
   <div id="error-container" class="container">
     <div class="card">
       <div class="icon-wrapper error icon-circle">
@@ -215,15 +212,17 @@
       </div>
       <div>
         <h1>Connection Failed</h1>
-        <p style="margin-top: 12px;">We were unable to link your account. Please try again.</p>
+        <p class="subtitle">We were unable to link your account. Please try again.</p>
       </div>
-      <button id="retryBtn" class="btn error" onclick="window.close()">
-        Return to App
-      </button>
+      <button class="btn error" onclick="window.close()">Return to App</button>
     </div>
   </div>
 
   <script>
+    if (window.ENV && window.ENV.isDark) {
+      document.documentElement.classList.add('dark');
+    }
+
     async function sendToken(enrollment) {
       await fetch("/token", {
         body: JSON.stringify(enrollment),
@@ -262,6 +261,9 @@
       teller.open();
     })
   </script>
+</body>
+
+</html>
 </body>
 
 </html>
