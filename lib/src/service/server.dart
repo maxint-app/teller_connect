@@ -7,7 +7,7 @@ import 'package:alfred/alfred.dart';
 import 'package:flutter/services.dart';
 import 'package:teller_connect/teller_connect.dart';
 
-typedef EnrollmentFn = ValueChanged<TellerData>;
+typedef EnrollmentFn = FutureOr<void> Function(TellerData data);
 
 abstract class TellerServerHandler {
   static Completer<String> _endpointCompleter = Completer();
@@ -53,11 +53,22 @@ abstract class TellerServerHandler {
     });
 
     app.post("/token", (req, res) async {
-      final body = jsonDecode(await req.body as String);
+      try {
+        final rawBody = await req.body;
+        final Map<String, dynamic> body = switch (rawBody) {
+          String value => jsonDecode(value) as Map<String, dynamic>,
+          Map value => value.map(
+              (key, value) => MapEntry(key.toString(), value),
+            ),
+          _ => throw const FormatException('Invalid /token request payload'),
+        };
 
-      onToken?.call(TellerData.fromJson(body));
-
-      res.send("OK");
+        await onToken?.call(TellerData.fromJson(body));
+        res.send("OK");
+      } catch (e) {
+        res.statusCode = HttpStatus.internalServerError;
+        res.send(e.toString());
+      }
     });
 
     app.delete("/teller", (req, res) {

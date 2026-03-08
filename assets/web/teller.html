@@ -224,10 +224,15 @@
     }
 
     async function sendToken(enrollment) {
-      await fetch("/token", {
+      const response = await fetch("/token", {
         body: JSON.stringify(enrollment),
         method: "POST"
       });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage || "Failed to complete Teller enrollment.");
+      }
     }
 
     function showSuccessScreen() {
@@ -247,8 +252,12 @@
           document.getElementById("loading-state").style.display = "none";
         },
         onSuccess: async function (enrollment) {
-          showSuccessScreen();
-          await sendToken(enrollment);
+          try {
+            await sendToken(enrollment);
+            showSuccessScreen();
+          } catch (_) {
+            showErrorScreen();
+          }
         },
         onExit: async () => {
           showErrorScreen();
@@ -261,9 +270,6 @@
       teller.open();
     })
   </script>
-</body>
-
-</html>
 </body>
 
 </html>
